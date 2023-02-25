@@ -7,7 +7,7 @@ type ButtonProps = {
   triple?: boolean;
   operation?: boolean;
   light?: boolean;
-  onClick: () => void;
+  onClick: (label?: string) => void;
 };
 
 export default (props: ButtonProps) => {
@@ -29,7 +29,10 @@ export default (props: ButtonProps) => {
   }
 
   return (
-    <TouchableHighlight onPress={props.onClick} style={stylesButton}>
+    <TouchableHighlight
+      onPress={() => props.onClick(props.label)}
+      style={stylesButton}
+    >
       <Text style={styleText}>{props.label}</Text>
     </TouchableHighlight>
   );
