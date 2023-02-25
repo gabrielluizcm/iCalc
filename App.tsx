@@ -4,21 +4,63 @@ import { StyleSheet, View, SafeAreaView } from 'react-native';
 import Display from './src/components/Display';
 import Button from './src/components/Button';
 
+const initialState = {
+  displayValue: '0',
+  needClear: false,
+  operation: '',
+  values: [0, 0],
+  currentValueIndex: 0,
+};
+
 export default class App extends Component {
-  state = {
-    displayValue: '0',
-  };
+  state = { ...initialState };
 
   addDigit = (n: string) => {
-    this.setState({ displayValue: n });
+    let { displayValue, values, needClear, currentValueIndex } = this.state;
+
+    if (n === '.' && !needClear && displayValue.includes('.')) {
+      return;
+    }
+
+    needClear = needClear || displayValue === '0';
+    displayValue = needClear ? n : displayValue + n;
+    values[currentValueIndex] = parseFloat(displayValue);
+
+    this.setState({ displayValue, needClear: false, values });
   };
 
   clearMemory = () => {
-    this.setState({ displayValue: '0' });
+    const { displayValue } = this.state;
+
+    if (displayValue !== '') {
+      this.setState({ displayValue: '0', needClear: true });
+    } else {
+      this.setState(initialState);
+    }
   };
 
   setOperation = (operation: string) => {
-    console.warn(operation);
+    if (this.state.operation !== '' || operation === '=') {
+      this.executeStateOperation();
+    }
+
+    this.setState({
+      needClear: true,
+      operation: operation === '=' ? '' : operation,
+      currentValueIndex: operation === '=' ? 0 : 1,
+    });
+  };
+
+  executeStateOperation = () => {
+    let { operation, values } = this.state;
+    const formulas = {
+      '+': values[0] + values[1],
+      '-': values[0] - values[1],
+      '*': values[0] * values[1],
+      '/': values[0] / values[1],
+    };
+    const result = formulas[operation] ?? '0';
+    this.setState({ displayValue: result, values: [result, 0] });
   };
 
   render() {
