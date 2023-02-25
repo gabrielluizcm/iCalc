@@ -32,8 +32,10 @@ export default class App extends Component {
   clearMemory = () => {
     const { displayValue } = this.state;
 
-    if (displayValue !== '') {
-      this.setState({ displayValue: '0', needClear: true });
+    if (displayValue !== '0') {
+      const { values, currentValueIndex } = this.state;
+      values[currentValueIndex] = 0;
+      this.setState({ displayValue: '0', needClear: true, values });
     } else {
       this.setState(initialState);
     }
