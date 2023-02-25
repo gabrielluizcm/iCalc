@@ -60,6 +60,7 @@ export default class App extends Component {
       '-': values[0] - values[1],
       '*': values[0] * values[1],
       '/': values[0] / values[1],
+      '': values[0],
     };
     const result = formulas[operation] ?? '0';
     this.setState({ displayValue: result, values: [result, 0] });
